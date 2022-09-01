@@ -7,6 +7,12 @@
   scrollbar-width: none;
 }
 
+*:hover,
+*:focus {
+  outline: none;
+  border: none;
+}
+
 *::-webkit-scrollbar {
   display: none;
 }
