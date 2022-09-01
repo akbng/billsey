@@ -1,9 +1,12 @@
 import { FaPlus, FaTag } from "react-icons/fa";
+import { HiOutlineUserGroup } from "react-icons/hi";
 
 const GroupCard = ({ className }) => {
   return (
     <div className={className}>
-      <div className="text-xl text-gray-200">GROUP_NAME</div>
+      <div className="text-xl text-gray-200">
+        <HiOutlineUserGroup className="inline" /> GROUP_NAME
+      </div>
       <div className="w-full mt-0 mb-3 flex justify-start items-center flex-wrap">
         {Array(4)
           .fill("")
