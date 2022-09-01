@@ -12,7 +12,7 @@ const calcBounds = () => {
   const maxDist = innerWidth < 1000 ? innerWidth / 2 : innerWidth / 5;
   // the { x, y } origin for each orb (the bottom right of the screen)
   const originX = innerWidth / 1.25;
-  const originY = innerWidth < 1000 ? innerHeight / 3 : innerHeight / 1.375;
+  const originY = innerWidth < 1000 ? innerHeight / 2 : innerHeight / 1.375;
 
   // allow each orb to move x distance away from it's x / y origin
   return {
