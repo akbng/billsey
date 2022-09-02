@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
-const crypto = require("crypto");
-const { v4: uuidv4 } = require("uuid");
-const { ObjectId } = mongoose.Schema.Types;
+import { Schema, models, model } from "mongoose";
+import { createHmac } from "crypto";
+import { v4 as uuidv4 } from "uuid";
+const { ObjectId } = Schema.Types;
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
   {
     name: {
       first: {
@@ -100,8 +100,7 @@ userSchema.methods = {
   hashPassword: function (plainPassword) {
     if (!plainPassword) return "";
     try {
-      return crypto
-        .createHmac("sha256", this.salt)
+      return createHmac("sha256", this.salt)
         .update(plainPassword)
         .digest("hex");
     } catch (error) {
@@ -113,4 +112,4 @@ userSchema.methods = {
   },
 };
 
-module.exports = mongoose.models.User || mongoose.model("User", userSchema);
+export default models.User || model("User", userSchema);
