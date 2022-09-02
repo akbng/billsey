@@ -1,5 +1,14 @@
 import hsl from "hsl-to-hex";
 
+export const makeObject = (arg) => {
+  const obj = {};
+  const keys = Object.keys(arg);
+  keys.forEach((key) => {
+    if (arg[key]) obj[key] = arg[key];
+  });
+  return obj;
+};
+
 export const random = (min, max) => Math.random() * (max - min) + min;
 
 // map a number from 1 range to another
