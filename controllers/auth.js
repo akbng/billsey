@@ -20,7 +20,7 @@ export const signin = async (req, res) => {
 
   const { email } = req.body;
   try {
-    const user = await User.findOne({ email: email }).select("_id name email");
+    const user = await User.findOne({ email: email });
     if (!user) {
       await sendVerifyMail(email);
       return res
@@ -37,9 +37,14 @@ export const signin = async (req, res) => {
         });
 
       const token = issueJwt({ user });
+
+      user.hashed_password = undefined;
+      user.salt = undefined;
       return res.status(200).json({ error: false, data: { ...token, user } });
     }
 
+    user.hashed_password = undefined;
+    user.salt = undefined;
     return res.status(200).json({ error: false, data: user });
   } catch (err) {
     return res
