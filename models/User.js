@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema(
         /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
     },
     address: {
-      typeo: ObjectId,
+      type: ObjectId,
       ref: "Address",
     },
     account: {
@@ -108,9 +108,4 @@ userSchema.methods = {
   },
 };
 
-const User = new mongoose.model("User", userSchema);
-
-module.exports = {
-  User,
-  userSchema,
-};
+module.exports = mongoose.models.User || mongoose.model("User", userSchema);
