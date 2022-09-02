@@ -1,11 +1,11 @@
-import { generateJwt } from "../lib/jwt";
+import { issueJwt } from "../lib/jwt";
 import sendEmail from "../lib/sendEmail";
 import User from "../models/User";
 import { makeObject } from "../utils";
 
 const sendVerifyMail = async (email) => {
   const sub = "Verify Your Email Address";
-  const token = generateJwt({ email });
+  const token = issueJwt({ email });
   const text = `Go to the link below to verify your email: http://localhost:3000/signup?tok=${token.token}`;
   const msg = `Click on the <a href="http://localhost:3000/signup?tok=${token.token}">link to verify your email</a> or <strong>paste the link</strong> in your browser: http://localhost:3000/signup?tok=${token.token}`;
   await sendEmail({ to: email, sub, text, html: msg });
@@ -36,7 +36,7 @@ export const signin = async (req, res) => {
           reason: "Email and password do not match",
         });
 
-      const token = generateJwt({ user });
+      const token = issueJwt({ user });
       return res.status(200).json({ error: false, data: { ...token, user } });
     }
 
@@ -55,12 +55,28 @@ export const signup = async (req, res) => {
       reason: "There is no data/body in the request",
     });
 
-  const { name, fullName, email, phone, address } = req.body;
-  const user = User(makeObject({ name, fullName, email, phone, address }));
+  const { name, fullName, email, password, phone, address } = req.body;
+
+  if (email !== req.sub)
+    return res
+      .status(401)
+      .json({ error: true, reason: "wrong email provided" });
+
+  const user = User(
+    makeObject({
+      name,
+      fullName,
+      email,
+      password,
+      phone,
+      address,
+      verified: true,
+    })
+  );
 
   try {
     const newUser = await user.save({ validateBeforeSave: true });
-    const token = generateJwt({ user: newUser });
+    const token = issueJwt({ user: newUser });
     // hide the sensitive information
     newUser.hashed_password = undefined;
     newUser.salt = undefined;
