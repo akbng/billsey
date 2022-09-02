@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema(
       unique: true,
       match: /.+\@.+\..+/,
     },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
     hashed_password: {
       type: String,
       required: true,
@@ -33,7 +37,8 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: Number,
       trim: true,
-      maxLength: 10,
+      match:
+        /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
     },
     imageUrl: {
       type: String,
