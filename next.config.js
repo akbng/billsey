@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-}
+  env: {
+    ROOT: __dirname,
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
