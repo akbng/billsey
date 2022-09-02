@@ -1,4 +1,4 @@
-import { FaUserFriends } from "react-icons/fa";
+import { FaUserFriends, FaUserPlus } from "react-icons/fa";
 import { MdOutlineExplore } from "react-icons/md";
 
 const FriendsList = ({ className }) => {
@@ -38,16 +38,15 @@ const FriendsList = ({ className }) => {
             .map((_, i) => (
               <div
                 key={i}
-                className="my-5 first:mt-2 flex justify-start items-center"
+                className="my-5 first:mt-2 flex justify-start items-center relative"
               >
                 <div className="w-8 h-8 mr-4 rounded-full bg-fuchsia-800" />
-                <div>
-                  <div className="text-lg text-white">Alice Poper</div>
-                  <div className="text-xs text-gray-200">
-                    <div className="w-2 h-2 mr-1 rounded-full bg-green-600 inline-block"></div>
-                    Online
+                <div className="text-lg text-white">Alice Poper</div>
+                <button className="absolute top-1/2 -translate-y-1/2 right-0 py-1 px-2 rounded-md bg-gradient-to-r from-indigo-900 to-purple-900">
+                  <div className="uppercase text-xs text-white">
+                    <FaUserPlus className="inline mr-1" /> add
                   </div>
-                </div>
+                </button>
               </div>
             ))}
         </div>
