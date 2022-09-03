@@ -9,6 +9,7 @@ import { signup, verifyToken } from "../helper/auth";
 import ProfileTab from "../components/ProfileTab";
 import AddressTab from "../components/AddressTab";
 import PhoneTab from "../components/PhoneTab";
+import { authenticate, isAuthenticated } from "../utils";
 
 const Signup = () => {
   const router = useRouter();
@@ -51,6 +52,11 @@ const Signup = () => {
     };
     if (router.query.tok) init();
   }, [router]);
+
+  useEffect(() => {
+    router.prefetch("/");
+    if (isAuthenticated()) router.replace("/");
+  }, []);
 
   const goToNext = async (e) => {
     e.preventDefault();
@@ -109,7 +115,15 @@ const Signup = () => {
         const result = await signup(user, token);
         console.log(result);
         if (result.error) toast.error(result.reason);
-        else router.push("/");
+        else {
+          const { user, token, expires } = result.data;
+          authenticate({
+            user: { _id: user._id, email: user.email, name: user.name },
+            token,
+            expiry: expires,
+          });
+          router.push("/");
+        }
       } catch (err) {
         toast.error(err.reason || err.message);
       }
