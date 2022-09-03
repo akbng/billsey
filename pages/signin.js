@@ -1,10 +1,17 @@
 import { RiLoader2Line, RiSendPlaneFill } from "react-icons/ri";
-import { FaFacebookF, FaGoogle, FaInfoCircle } from "react-icons/fa";
-import { useState } from "react";
+import {
+  FaFacebookF,
+  FaGoogle,
+  FaInfoCircle,
+  FaRegEye,
+  FaRegEyeSlash,
+} from "react-icons/fa";
+import { useState, useEffect } from "react";
 import { signin } from "../helper/auth";
 import { useRouter } from "next/router";
+import toast, { Toaster } from "react-hot-toast";
+import { authenticate, isAuthenticated } from "../utils";
 
-// TODO: Redirect to homepage if already signed in
 const Signin = () => {
   const router = useRouter();
   const [newUser, setNewUser] = useState(true);
@@ -12,6 +19,7 @@ const Signin = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
+  const [showPass, setShowPass] = useState(false);
 
   const handleChange = (name) => (e) =>
     setValues({ ...values, [name]: e.target.value });
@@ -19,6 +27,10 @@ const Signin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!values.email) return;
+    if (!newUser && !values.password) {
+      setError("Please enter your password");
+      return;
+    }
 
     setLoading(true);
     setError("");
@@ -32,7 +44,12 @@ const Signin = () => {
         else if (result.data.token) {
           setMsg("Login Successfull");
           setValues({ email: "", password: "" });
-          // TODO: Set Local Storage
+          const { user, token, expires } = result.data;
+          authenticate({
+            user: { _id: user._id, email: user.email, name: user.name },
+            token,
+            expiry: expires,
+          });
           router.push("/");
         } else {
           setNewUser(false);
@@ -45,8 +62,18 @@ const Signin = () => {
     }
   };
 
+  useEffect(() => {
+    if (error) toast.error(error);
+    if (isAuthenticated()) router.replace("/");
+  }, [error]);
+
+  useEffect(() => {
+    router.prefetch("/");
+  }, []);
+
   return (
     <div className="w-sreen h-screen overflow-hidden bg-gradient-to-tr from-gray-900 via-indigo-900 to-purple-900 relative">
+      <Toaster />
       <div className="absolute inset-6 bg-white bg-opacity-10 rounded-lg">
         <div className="w-full min-h-[498px] p-6 absolute top-1/2 -translate-y-1/2">
           <h1 className="text-4xl text-purple-50">Welcome to Billsey</h1>
@@ -63,7 +90,7 @@ const Signin = () => {
           <form className="w-full relative" onSubmit={handleSubmit}>
             <input
               type="email"
-              className="w-full py-2 pl-3 pr-8 border focus:outline-none rounded-md bg-purple-50 text-gray-800 shadow-xl"
+              className="w-full py-2 pl-3 pr-8 border focus:outline-none rounded-md bg-gray-50 disabled:bg-gray-300 disabled:cursor-not-allowed text-gray-800 shadow-xl"
               placeholder="Enter your Email..."
               value={values.email}
               onChange={handleChange("email")}
@@ -90,13 +117,25 @@ const Signin = () => {
             )}
             {!newUser && (
               <>
-                <input
-                  type="password"
-                  className="w-full my-6 py-2 pl-3 pr-8 text-lg border focus:outline-none rounded-md bg-purple-50 text-gray-800 shadow-xl"
-                  placeholder="Enter your password..."
-                  value={values.password}
-                  onChange={handleChange("password")}
-                />
+                <div className="relative w-full">
+                  <input
+                    type={showPass ? "text" : "password"}
+                    className="w-full my-2 py-2 pl-3 pr-8 text-lg border focus:outline-none rounded-md bg-purple-50 text-gray-800 shadow-xl"
+                    placeholder="Enter your password..."
+                    value={values.password}
+                    onChange={handleChange("password")}
+                  />
+                  <div
+                    onClick={() => setShowPass(!showPass)}
+                    className="absolute top-0 bottom-0 right-0 flex items-center px-2"
+                  >
+                    {showPass ? (
+                      <FaRegEyeSlash className="text-purple-800 text-xl cursor-pointer" />
+                    ) : (
+                      <FaRegEye className="text-purple-800 text-xl cursor-pointer" />
+                    )}
+                  </div>
+                </div>
                 <button
                   type="submit"
                   disabled={loading}
