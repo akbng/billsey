@@ -18,6 +18,8 @@ const Signin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!values.email) return;
+
     setLoading(true);
     setError("");
     setMsg("");
