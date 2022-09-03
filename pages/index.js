@@ -1,9 +1,10 @@
 import { Stage, Container } from "@inlet/react-pixi";
 import { KawaseBlurFilter } from "@pixi/filter-kawase-blur";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 import Orb from "../components/Orb";
-import { generateColors, random } from "../utils";
+import { generateColors, isAuthenticated, random } from "../utils";
 import Groups from "../components/Groups";
 import BottomNav from "../components/BottomNav";
 import SearchBar from "../components/SearchBar";
@@ -11,6 +12,7 @@ import FriendsList from "../components/FriendsList";
 import Transactions from "../components/Transactions";
 
 const Home = () => {
+  const router = useRouter();
   const colors = generateColors();
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
@@ -21,6 +23,8 @@ const Home = () => {
   };
 
   useEffect(() => {
+    router.prefetch("/signin");
+    if (!isAuthenticated()) router.push("/signin");
     if (typeof window !== "undefined") setMounted(true);
   }, []);
 
