@@ -11,6 +11,45 @@ import { signin } from "../helper/auth";
 import { useRouter } from "next/router";
 import toast, { Toaster } from "react-hot-toast";
 import { authenticate, isAuthenticated } from "../utils";
+import Modal from "../components/Modal";
+
+const SuccessMessage = ({ closeTab }) => (
+  <>
+    <div className="mt-2">
+      <p className="text-sm leading-6 text-gray-500">
+        <strong>
+          We’ve sent you an email with a link to register with us.
+        </strong>{" "}
+        If you do not find any mail in your inbox, please search your{" "}
+        <strong>spam</strong> and <strong>trash</strong> folder OR type{" "}
+        <code className="py-1 px-2 rounded text-xs whitespace-nowrap bg-gray-800 text-white">
+          from:(bagankan212@gmail.com)
+        </code>{" "}
+        in the search bar. <strong>If you still face problem Signing Up</strong>
+        , use any of the <strong>valid email &amp; password</strong> available
+        in the{" "}
+        <a
+          className="underline text-blue-700"
+          href="https://github.com/akbng/billsey"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          repository's README
+        </a>{" "}
+        file.
+      </p>
+    </div>
+    <div className="mt-4">
+      <button
+        type="button"
+        className="py-1 px-4 rounded-md bg-purple-200 text-purple-800"
+        onClick={closeTab}
+      >
+        Okay! Close Tab
+      </button>
+    </div>
+  </>
+);
 
 const Signin = () => {
   const router = useRouter();
@@ -18,8 +57,8 @@ const Signin = () => {
   const [values, setValues] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState("");
   const [showPass, setShowPass] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
 
   const handleChange = (name) => (e) =>
     setValues({ ...values, [name]: e.target.value });
@@ -34,15 +73,13 @@ const Signin = () => {
 
     setLoading(true);
     setError("");
-    setMsg("");
 
     try {
       const result = await signin(values);
       if (result.error) setError(result.reason);
       else {
-        if (!result.data) setMsg(result.message);
+        if (!result.data) setShowMessage(true);
         else if (result.data.token) {
-          setMsg("Login Successfull");
           setValues({ email: "", password: "" });
           const { user, token, expires } = result.data;
           authenticate({
@@ -74,6 +111,13 @@ const Signin = () => {
   return (
     <div className="w-sreen h-screen overflow-hidden bg-gradient-to-tr from-gray-900 via-indigo-900 to-purple-900 relative">
       <Toaster />
+      <Modal
+        isOpen={showMessage}
+        setIsOpen={setShowMessage}
+        title="Email Sent Successfully (CLOSE TAB)"
+      >
+        <SuccessMessage closeTab={() => window.close()} />
+      </Modal>
       <div className="absolute inset-6 bg-white bg-opacity-10 rounded-lg">
         <div className="w-full min-h-[498px] p-6 absolute top-1/2 -translate-y-1/2">
           <h1 className="text-4xl text-purple-50">Welcome to Billsey</h1>
