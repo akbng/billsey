@@ -37,5 +37,8 @@ export const states = [
   { name: "West Bengal", code: "WB", start: 700001, end: 743711 },
 ];
 
-export const findStatesFromPin = (pincode) =>
+export const findStateFromPin = (pincode) =>
   states.find(({ start, end }) => pincode >= start && pincode <= end);
+
+export const findStateFromCode = (code) =>
+  states.find((state) => state.code === code);
