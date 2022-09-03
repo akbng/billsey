@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import { MdAddLocationAlt, MdLocationOn } from "react-icons/md";
 import { ImUserCheck, ImUserPlus } from "react-icons/im";
 import { RiShieldKeyholeFill } from "react-icons/ri";
+import toast, { Toaster } from "react-hot-toast";
 
-import { verifyToken } from "../helper/auth";
+import { signup, verifyToken } from "../helper/auth";
 import ProfileTab from "../components/ProfileTab";
 import AddressTab from "../components/AddressTab";
 import PhoneTab from "../components/PhoneTab";
@@ -14,17 +15,36 @@ const Signup = () => {
   const [verified, setVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState(0);
+  const [email, setEmail] = useState("");
+  const [values, setValues] = useState({
+    firstName: "",
+    lastName: "",
+    password: "",
+    confirmPassword: "",
+    addressLine: "",
+    landmark: "",
+    city: "",
+    pincode: "",
+    state: "",
+    phoneNumber: "",
+    otp: "",
+  });
+
+  const handleValues = (name) => (e) =>
+    setValues((prevValues) => ({ ...prevValues, [name]: e.target.value }));
 
   useEffect(() => {
     const init = async () => {
       setLoading(true);
       try {
         const result = await verifyToken(router.query.tok);
-        if (result.error) console.error(result.reason);
-        else setVerified(true);
+        if (result.error) toast.error(result.reason);
+        else {
+          setVerified(true);
+          setEmail(result.data.sub);
+        }
       } catch (err) {
-        console.error(err);
-        //show error message
+        toast.error(err.reason || err.message);
       } finally {
         setLoading(false);
       }
@@ -32,11 +52,68 @@ const Signup = () => {
     if (router.query.tok) init();
   }, [router]);
 
-  const goToNext = (e) => {
+  const goToNext = async (e) => {
     e.preventDefault();
-    // TODO: check for name and password to be not empty
-    if (tab === 2) return;
-    setTab((tab) => tab + 1);
+    const {
+      firstName,
+      lastName,
+      password,
+      confirmPassword,
+      addressLine,
+      city,
+      pincode,
+    } = values;
+    if (tab === 0) {
+      if (!firstName || !lastName || !password || !confirmPassword) {
+        toast.error("Please! Fill all the fields before proceeding.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        toast.error("Passwords did not match");
+        return;
+      }
+      setTab((pt) => pt + 1);
+    }
+    if (tab === 1) {
+      if (!addressLine || !city || !pincode) {
+        toast.error("Please! Fill all the fields before proceeding.");
+        return;
+      }
+      setTab((pt) => pt + 1);
+    }
+    if (tab === 2) {
+      const { landmark, state, phoneNumber, otp } = values;
+      if (!phoneNumber) {
+        toast.error("Please Enter Phone number");
+        return;
+      }
+      if (otp !== "000000") {
+        toast.error("Please Enter 000000 in the OTP field");
+        return;
+      }
+      const token = router.query.tok;
+      const user = {
+        name: { first: firstName, last: lastName },
+        email: email,
+        password: password,
+        phone: phoneNumber,
+        address: {
+          line: addressLine,
+          landmark: landmark,
+          city: city,
+          pincode: parseInt(pincode),
+          state: state,
+        },
+      };
+      try {
+        const result = await signup(user, token);
+        console.log(result);
+        if (result.error) toast.error(result.reason);
+        else router.push("/");
+      } catch (err) {
+        toast.error(err.reason || err.message);
+      }
+    }
   };
 
   const goBack = (e) => {
@@ -46,6 +123,7 @@ const Signup = () => {
 
   return (
     <div className="w-sreen h-screen overflow-hidden bg-gradient-to-tr from-gray-900 via-indigo-900 to-purple-900 relative">
+      <Toaster />
       <div className="absolute inset-6 bg-white bg-opacity-10 rounded-lg">
         <div className="w-full min-h-[498px] p-6 absolute top-1/2 -translate-y-1/2">
           {!loading && verified ? (
@@ -80,9 +158,15 @@ const Signup = () => {
                 </div>
               </div>
               <div className="w-full">
-                {tab === 0 && <ProfileTab />}
-                {tab === 1 && <AddressTab />}
-                {tab === 2 && <PhoneTab />}
+                {tab === 0 && (
+                  <ProfileTab values={values} handleChange={handleValues} />
+                )}
+                {tab === 1 && (
+                  <AddressTab values={values} handleChange={handleValues} />
+                )}
+                {tab === 2 && (
+                  <PhoneTab values={values} handleChange={handleValues} />
+                )}
                 {tab !== 0 && (
                   <button
                     onClick={goBack}
