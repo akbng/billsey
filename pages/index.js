@@ -25,7 +25,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="w-screen h-screen overflow-hidden relative">
+    <div className="w-screen h-screen overflow-hidden relative bg-gray-900">
       <div>
         <SearchBar className="absolute inset-8 top-0 bottom-auto h-16" />
         {activeTab === "home" && (
