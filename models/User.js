@@ -46,8 +46,26 @@ const userSchema = new Schema(
         /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
     },
     address: {
-      type: ObjectId,
-      ref: "Address",
+      line: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      landmark: String,
+      city: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      pincode: {
+        type: Number,
+        required: true,
+        match: /^[0-9]{6}$/,
+      },
+      state: {
+        type: String,
+        required: true,
+      },
     },
     account: {
       type: ObjectId,
