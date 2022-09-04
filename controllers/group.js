@@ -5,7 +5,7 @@ export const getMemberGroups = async (userId) => {
   try {
     const groups = await Group.find({
       $or: [{ creator: userId }, { members: userId }],
-    });
+    }).populate("members", "_id name email");
     return groups;
   } catch (err) {
     throw err;
@@ -16,8 +16,8 @@ export const getGroupById = async (groupId) => {
   try {
     const group = await Group.findById(groupId)
       .populate("creator", "_id name email")
-      .populate("members", "_id name email")
-      .populate("transactions");
+      .populate("members", "_id name email");
+    // .populate("transactions"); // TODO: uncomment after registering the Transaction model
     return group;
   } catch (err) {
     throw err;
