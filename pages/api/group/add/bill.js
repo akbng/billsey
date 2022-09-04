@@ -7,7 +7,7 @@ connectDB();
 export default authenticated(async function handler(req, res) {
   const { method } = req;
 
-  if (method === "POST") {
+  if (method === "PUT") {
     const { groupId, bill } = req.body;
     try {
       const group = await addBillToGroup({ groupId, bill });
