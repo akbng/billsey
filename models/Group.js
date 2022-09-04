@@ -42,7 +42,7 @@ const groupSchema = new Schema(
           type: Number,
           required: true,
         },
-        members: [{ type: ObjectId, ref: User }],
+        members: [{ type: ObjectId, ref: "User" }],
         splitAmount: Number,
       },
     ],
