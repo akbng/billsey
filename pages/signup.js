@@ -113,7 +113,6 @@ const Signup = () => {
       };
       try {
         const result = await signup(user, token);
-        console.log(result);
         if (result.error) toast.error(result.reason);
         else {
           const { user, token, expires } = result.data;
