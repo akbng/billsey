@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import { getGroupsOfMember } from "../helper/group";
+import { getFriends, getUsers } from "../helper/user";
 import { isAuthenticated } from "../utils";
+import CreateGroupForm from "./CreateGroupForm";
 
 import GroupCard from "./GroupCard";
 import Modal from "./Modal";
 
 const Groups = ({ className }) => {
   const [groups, setGroups] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
@@ -19,6 +22,10 @@ const Groups = ({ className }) => {
         const result = await getGroupsOfMember(user._id, token);
         if (result.error) throw Error(result.reason);
         setGroups(result.data);
+        setLoading(false);
+        const friendsList = await getFriends(token);
+        const others = await getUsers(token);
+        setUsers([...friendsList.data, ...others.data]);
       } catch (err) {
         console.error(err);
       } finally {
@@ -60,6 +67,19 @@ const Groups = ({ className }) => {
       >
         <FaPlus className="inline mr-1" /> New Group
       </button>
+      <Modal
+        isOpen={isCreateOpen}
+        setIsOpen={setIsCreateOpen}
+        title="Create New Group"
+        bgPanel="bg-gradient-to-tr from-gray-900 via-indigo-900 to-purple-900"
+        textColor="text-gray-200"
+      >
+        <CreateGroupForm
+          setIsOpen={setIsCreateOpen}
+          friends={users}
+          setGroups={setGroups}
+        />
+      </Modal>
     </main>
   );
 };
