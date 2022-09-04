@@ -1,4 +1,5 @@
 import { verifyJwt } from "../../lib/jwt";
+import User from "../../models/User";
 
 export const authenticated = (fn) => async (req, res) => {
   try {
@@ -12,7 +13,10 @@ export const authenticated = (fn) => async (req, res) => {
       req.headers.authorization.split(" ")[1]
     );
 
+    const user = await User.findById(decodedPayload.sub);
+    if (!user) throw Error("User not Found");
     req.sub = decodedPayload.sub;
+    req.user = user;
 
     fn(req, res);
   } catch (error) {
