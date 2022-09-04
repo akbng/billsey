@@ -13,10 +13,11 @@ export const authenticated = (fn) => async (req, res) => {
       req.headers.authorization.split(" ")[1]
     );
 
-    const user = await User.findById(decodedPayload.sub);
-    if (!user) throw Error("User not Found");
-    req.sub = decodedPayload.sub;
-    req.user = user;
+    if (!decodedPayload.sub.match(/.+\@.+\..+/)) {
+      const user = await User.findById(decodedPayload.sub);
+      if (!user) throw Error("User not Found");
+      req.user = user;
+    } else req.sub = decodedPayload.sub;
 
     fn(req, res);
   } catch (error) {
