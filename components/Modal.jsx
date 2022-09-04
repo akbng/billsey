@@ -38,7 +38,7 @@ const Modal = ({
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel
-                className={`w-full max-w-md transform overflow-hidden rounded-lg p-6 text-left align-middle shadow-xl transition-all ${bgPanel}`}
+                className={`w-full max-w-md transform rounded-lg p-6 text-left align-middle shadow-xl transition-all ${bgPanel}`}
               >
                 <Dialog.Title
                   as="h3"
