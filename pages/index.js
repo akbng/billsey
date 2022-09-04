@@ -24,9 +24,12 @@ const Home = () => {
 
   useEffect(() => {
     router.prefetch("/signin");
-    if (!isAuthenticated()) router.push("/signin");
     if (typeof window !== "undefined") setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated()) router.push("/signin");
+  });
 
   return (
     <div className="w-screen h-screen overflow-hidden relative bg-gray-900">
