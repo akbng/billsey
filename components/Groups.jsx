@@ -23,9 +23,8 @@ const Groups = ({ className }) => {
         if (result.error) throw Error(result.reason);
         setGroups(result.data);
         setLoading(false);
-        const friendsList = await getFriends(token);
-        const others = await getUsers(token);
-        setUsers([...friendsList.data, ...others.data]);
+        const allUsers = await getUsers(token);
+        setUsers(allUsers.data);
       } catch (err) {
         console.error(err);
       } finally {

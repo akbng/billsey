@@ -42,7 +42,12 @@ const FriendsList = ({ className }) => {
         const friendsList = await getFriends(token);
         setFriends(friendsList.data);
         const users = await getUsers(token);
-        setAllUsers(users.data);
+        setAllUsers(
+          users.data.filter(
+            (user) =>
+              !friendsList.data.map((friend) => friend._id).includes(user._id)
+          )
+        );
       } catch (err) {
         console.error(err);
       } finally {

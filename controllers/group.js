@@ -5,7 +5,9 @@ export const getMemberGroups = async (userId) => {
   try {
     const groups = await Group.find({
       $or: [{ creator: userId }, { members: userId }],
-    }).populate("members", "_id name email");
+    })
+      .populate("members", "_id name email")
+      .populate("creator", "_id name email");
     return groups;
   } catch (err) {
     throw err;
@@ -85,7 +87,7 @@ export const addBillToGroup = async ({ groupId, bill }) => {
   try {
     const group = await Group.findByIdAndUpdate(
       groupId,
-      { $push: { bills: bill } },
+      { $push: { bills: { ...bill, date: new Date() } } },
       { new: true, runValidators: true }
     );
     return group;

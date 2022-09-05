@@ -11,11 +11,7 @@ export default authenticated(async function handler(req, res) {
       const users = await getAllUsers();
       return res.status(200).json({
         error: false,
-        data: users.filter(
-          (user) =>
-            !user._id.equals(req.user._id) &&
-            !req.user.friends.includes(user._id)
-        ),
+        data: users.filter((user) => !user._id.equals(req.user._id)),
       });
     } catch (err) {
       return res
