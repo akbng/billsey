@@ -71,6 +71,25 @@ const userSchema = new Schema(
       type: ObjectId,
       ref: "Account",
     },
+    notifications: [
+      {
+        msgType: {
+          type: String,
+          enum: ["payment_request", "update", "friend_request"],
+          default: "payment_request",
+        },
+        amount: Number,
+        payTo: {
+          type: ObjectId,
+          ref: "User",
+        },
+        msg: String,
+        friend: {
+          type: ObjectId,
+          ref: "User",
+        },
+      },
+    ],
     friends: [
       {
         type: ObjectId,

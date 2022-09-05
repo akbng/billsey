@@ -3,6 +3,7 @@ import { FaRupeeSign } from "react-icons/fa";
 import { RiLoader2Line } from "react-icons/ri";
 import Select from "react-select";
 import { saveBillToGroup } from "../helper/group";
+import { pushNotify } from "../helper/user";
 import { isAuthenticated } from "../utils";
 
 const CreateBill = ({ setIsOpen, members, groupId }) => {
@@ -33,6 +34,16 @@ const CreateBill = ({ setIsOpen, members, groupId }) => {
       };
       const newBill = await saveBillToGroup({ ...bill, token, groupId });
       if (newBill.error) throw Error(newBill.reason);
+      if (users.length > 0)
+        await Promise.all(
+          users.map((User) =>
+            pushNotify({
+              token,
+              notifications: { amount: splitAmount, payTo: user._id },
+              userId: User.value,
+            })
+          )
+        );
       setIsOpen(false);
     } catch (err) {
       console.error(err);

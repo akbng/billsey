@@ -15,7 +15,9 @@ const Chats = () => {
           </div>
         </div>
       </div>
-      <div className="absolute inset-4 top-12 bottom-12 overflow-x-hidden overflow-y-auto"></div>
+      <div className="absolute inset-4 top-12 bottom-12 overflow-x-hidden overflow-y-auto">
+        {/* TODO: Implement later */}
+      </div>
       <BottomNav className="fixed inset-0 top-auto h-10 bg-gradient-to-r from-indigo-900 to-purple-900" />
     </div>
   );

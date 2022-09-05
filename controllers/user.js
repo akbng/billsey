@@ -13,6 +13,19 @@ export const addFriend = async ({ userId, friendId }) => {
   }
 };
 
+export const pushNotification = async ({ userId, notifications }) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $push: { notifications: notifications } },
+      { new: true, runValidators: true }
+    );
+    return user;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const getAllUsers = async () => {
   try {
     const users = await User.find().select("_id name email phone");
