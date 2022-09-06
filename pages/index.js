@@ -10,6 +10,7 @@ import BottomNav from "../components/BottomNav";
 import SearchBar from "../components/SearchBar";
 import FriendsList from "../components/FriendsList";
 import Transactions from "../components/Transactions";
+import MenuTab from "../components/MenuTab";
 
 const Home = () => {
   const router = useRouter();
@@ -43,6 +44,9 @@ const Home = () => {
         )}
         {activeTab === "transactions" && (
           <Transactions className="absolute inset-4 top-16 bottom-12 overflow-x-hidden overflow-y-auto" />
+        )}
+        {activeTab === "menu" && (
+          <MenuTab className="absolute inset-4 top-16 bottom-12 overflow-hidden" />
         )}
         <BottomNav
           active={activeTab}

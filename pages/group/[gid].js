@@ -53,7 +53,7 @@ const GroupPage = () => {
         setLoading(false);
       }
     };
-    if (gid) init();
+    if (gid && !isBillOpen) init();
   }, [router, isBillOpen]);
 
   return (
