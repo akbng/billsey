@@ -37,7 +37,11 @@ export const authenticate = (token) => {
 export const isAuthenticated = () => {
   if (typeof window === "undefined") return false;
   const data = JSON.parse(localStorage.getItem("token"));
-  if (data && data.expiry * 1000 > Date.now()) 
-    return data;
-   else return false;
+  if (data && data.expiry * 1000 > Date.now()) return data;
+  else return false;
+};
+
+export const removeToken = () => {
+  if (typeof window === "undefined") return false;
+  return localStorage.removeItem("token");
 };
